@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Guessing</title>
+    <script>
+        function Guess() {
+            var num = Math.floor(Math.random() * 10) + 1;
+            var guess = -1;
+            var result = "";
+            while (guess != num) {
+                guess = window.prompt("Guess a number from 1 to 10")
+                result += "Your guess: " + guess;
+                result += "<br />";
+                if (guess != num) {
+                    result += "This guess is incorrect.";
+                }
+            }
+            result += "You got it!";
+            document.getElementById("guess").textContent = result;
+        }
+    </script>
+</head>
+<body>
+    <p>Try to guess the number between 1 and 10!<br /><span id="guess"></span></p>
+    <form>
+        <button name="press" onclick="Guess()">Start</button>
+    </form>
+</body>
+</html>

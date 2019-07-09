@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hurricanes</title>
+    <script>
+        <!--
+        function Display(num)
+        {
+            var speed = "Unknown";
+            if (num == 1) {
+                speed = "74 - 95";
+            } else if (num == 2) {
+                speed = "96 - 110";
+            } else if (num == 3) {
+                speed = "111 - 130";
+            } else if (num == 4) {
+                speed = "131 - 155";
+            } else if (num == 5) {
+                speed = "156+";
+            }
+            document.getElementById("test").textContent = speed
+        }//-->
+    </script>
+</head>
+<body>
+    <p>Please select a hurricane category:</p>
+    <form><input name="num" type="number" onchange="Display(num.value)"/></form>
+    <p>The resulting wind speed is: <span id="test"></span></p>
+</body>
+</html>
