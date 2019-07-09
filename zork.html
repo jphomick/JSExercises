@@ -1,0 +1,63 @@
+<html>
+<head>
+    <script>
+        var map = [["danceFloor", "vault", "tunnel"],["study", "mainHall", "kitchen"],["library", "parlor", "diningRoom"]];
+        var curr = [2, 1];
+
+        function zork(){
+            var command = document.getElementById("command").value;
+            var msg = ""
+            document.getElementById("command").value = '';
+
+            //document.getElementById("message").innerHTML = "<b>You said: " + v + "</b>"
+            if (command.includes("left") && curr[1] > 0) {
+                document.getElementById(map[curr[0]][curr[1]]).style.backgroundColor = "white";
+                curr = [curr[0], curr[1] - 1];
+                document.getElementById(map[curr[0]][curr[1]]).style.backgroundColor = "blue";
+                msg = "You moved left to a new location!"
+            } else if (command.includes("right") && curr[1] < map[1].length - 1) {
+                document.getElementById(map[curr[0]][curr[1]]).style.backgroundColor = "white";
+                curr = [curr[0], curr[1] + 1];
+                document.getElementById(map[curr[0]][curr[1]]).style.backgroundColor = "blue";
+                msg = "You moved right to a new location!"
+            } else if (command.includes("up") && curr[0] > 0) {
+                document.getElementById(map[curr[0]][curr[1]]).style.backgroundColor = "white";
+                curr = [curr[0] - 1, curr[1]];
+                document.getElementById(map[curr[0]][curr[1]]).style.backgroundColor = "blue";
+                msg = "You moved up to a new location!"
+            } else if (command.includes("down") && curr[0] < map[0].length - 1) {
+                document.getElementById(map[curr[0]][curr[1]]).style.backgroundColor = "white";
+                curr = [curr[0] + 1, curr[1]];
+                document.getElementById(map[curr[0]][curr[1]]).style.backgroundColor = "blue";
+                msg = "You moved down to a new location!"
+            } else {
+                msg = "Nothing happens"
+            }
+
+            moves = document.getElementById("moves").text;
+            document.getElementById("moves").value = msg + "\nYou said: " + command + "\n" + document.getElementById("moves").value
+        }
+
+    </script>
+</head>
+<body>
+<h1>Welcome to Zork</h1>
+<table border="1" style="width:400px">
+    <tr><td border="1" id="danceFloor">&nbsp;</td><td border="1" id="vault">&nbsp;</td><td border="1" id="tunnel">&nbsp;</td></tr>
+    <tr><td border="1" id="study">&nbsp;</td><td border="1" id="mainHall">&nbsp;</td><td border="1" id="kitchen">&nbsp;</td></tr>
+    <tr><td border="1" id="library">&nbsp;</td><td border="1" id="parlor" style="background-color: blue">&nbsp;</td><td border="1" id="diningRoom">&nbsp;</td></tr>
+</table>
+<br />
+<textarea id="moves" rows="6" cols="50">You are in the parlor.
+</textarea>
+<div id="message">
+
+</div>
+<br />
+<form action="javascript:zork();">
+    <input type="text" name="command" id="command"/>
+    <input type="submit" id="submit" name="submit">
+    <img hidden src="http://images.clipartpanda.com/death-clipart-tombstone-clipart.gif" alt="Game over. Dude." height="50"/>
+</form>
+</body>
+</html>
