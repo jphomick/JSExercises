@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        var movies = [];
+
+        function list() {
+            var list = document.getElementById("list")
+            while (movies.length > 0) {
+                var info = document.createElement("P")
+                info.innerHTML = movies.pop();
+                list.appendChild(info);
+            }
+        }
+
+        function add() {
+            var movie = prompt("Please enter a movie:")
+            movies.push(movie);
+        }
+    </script>
+</head>
+<body>
+    <p id="list"></p>
+    <button name="addBtn" onclick="add()">Add Movie</button>
+    <button name="listBtn" onclick="list()">List Movies</button>
+</body>
+</html>
