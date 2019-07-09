@@ -15,9 +15,12 @@
                         var list = document.getElementById("list");
                         list.removeChild(item);
                         items.splice(i, 1);
+                    } else {
+                        i++;
                     }
+                } else {
+                    i++;
                 }
-                i++;
             }
         }
 
