@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Validation</title>
+    <script>
+        function validateEmail() {
+            var email = document.getElementById("mail").value;
+
+            var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(email);
+        }
+
+        function validatePassword() {
+            var password = document.getElementById("password").value;
+
+            if (password.length >= 5) {
+                return true;
+            }
+            return false;
+        }
+
+        function validate() {
+            if (validateEmail() && validatePassword()) {
+                document.getElementById("result").setAttribute("style", "color: green");
+                document.getElementById("result").innerHTML = "The entry is valid!"
+                return true;
+            } else {
+                document.getElementById("result").setAttribute("style", "color: red");
+                document.getElementById("result").innerHTML = "The entry is invalid!"
+                return false;
+            }
+        }
+    </script>
+</head>
+<body style="margin: 50px">
+    <form onsubmit="return validate()" method="get" action="calculator.html">
+    <p>E-Mail</p>
+    <input id="mail" type="text" />
+    <p>Password</p>
+    <input id="password" type="password" />
+    <input type="submit" value="Validate"/>
+    <p id="result"></p>
+    </form>
+</body>
+</html>
