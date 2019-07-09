@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"/>
+    <script>
+        function add(col1, col2) {
+            var table = document.getElementById("table");
+            var test = document.getElementById('col2');
+            var row = table.insertRow(0);
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            cell1.innerHTML = col1;
+            cell2.innerHTML = col2;
+        }
+    </script>
+</head>
+<body>
+    <table class="table" id="table"></table>
+        <p>Enter two values for the table:</p>
+        <input id="col1" type="text" />
+        <input id="col2" type="text" />
+        <button name="btn" onclick="add(document.getElementById('col1').value
+        , document.getElementById('col2').value)">Save</button>
+</body>
+</html>
