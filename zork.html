@@ -6,7 +6,9 @@
         var monsters = [["Dancing Skeleton", null, "Spider"],["Educated Ghost", "Stretch", "Bat"],["Evil Wizard", null, "Talking Pizza"]];
         var items = [["Disco Ball", "Chest", "Wall"],[null, "Map", "Table"],["Book", "Piano", "Bottle"]];
         var loot = [[100, 0, 25],[60, 35, 10],[80, 0, 55]];
+        var gameover = false;
         var money = 0;
+        var health = 10;
         var hasKey = false;
         var hasBomb = false;
 
@@ -15,6 +17,9 @@
         }
 
         function zork(){
+            if (gameover) {
+                return;
+            }
             var command = document.getElementById("command").value.toLowerCase();
             var msg = "";
             document.getElementById("command").value = '';
@@ -28,11 +33,13 @@
                 if (command.includes("map")) {
                     msg = "The old dusty map seems to illustrate a key inside the folds of a book."
                 } else if (command.includes("disco ball")) {
-                    msg = "Dance, dance, dance the night away!";
                     if (monsters[curr[0]][curr[1]] != null && monsters[curr[0]][curr[1]].includes("Dancing Skeleton")) {
-                        msg += "\nThe skeleton is so impressed by your moves, he lets you pass!"
+                        msg = "You got $" + loot[curr[0]][curr[1]] + " loot!\n";
+                        msg += "The skeleton is so impressed by your moves, he lets you pass!\n"
+                        money += loot[curr[0]][curr[1]];
                         monsters[curr[0]][curr[1]] = null;
                     }
+                    msg += "Dance, dance, dance the night away!";
                 } else if (command.includes("piano")) {
                     msg = "You play the piano for a bit. You sound nice.\n...At least that's what you tell yourself";
                 } else if (command.includes("table")) {
@@ -50,6 +57,12 @@
                         msg = "Using the bomb, you detonate the wall and escape! YOU WIN!\nFinal money: $" + money;
                         document.getElementById(getRoomId(curr)).style.backgroundColor = "white";
                         curr = [-1, -1];
+                        gameover = true;
+                        for (var i = 0; i < 3; i++) {
+                            for (var j = 0; j < 3; j++) {
+                                document.getElementById(getRoomId([i,j])).style.backgroundColor = "green";
+                            }
+                        }
                     } else {
                         msg = "The wall looks a bit loose.";
                     }
@@ -66,7 +79,7 @@
                 if (command.includes("dancing skeleton")) {
                     msg = "The skeleton dodges your attack with sick moves!"
                 } else if (command.includes("")) {
-                    msg = "You defeat the " + monsters[curr[0]][curr[1]] + "!\nYou got $" + loot[curr[0]][curr[1]] + " loot!";
+                    msg = "You got $" + loot[curr[0]][curr[1]] + " loot!\nYou defeat the " + monsters[curr[0]][curr[1]] + "!";
                     monsters[curr[0]][curr[1]] = null;
                     money += loot[curr[0]][curr[1]];
                 }
@@ -104,12 +117,28 @@
                 msg = "Nothing happens";
             }
 
+            if (!gameover && monsters[curr[0]][curr[1]] != null && !moved) {
+                msg = monsters[curr[0]][curr[1]] + " attacks! You take 1 damage!\n" + msg;
+                health -= 1;
+                document.getElementById("health").innerHTML = health;
+            }
+
+            if (!gameover && health <= 0) {
+                document.getElementById("dead").hidden = false;
+                msg = "YOU LOSE!\n" + msg;
+                document.getElementById(getRoomId(curr)).style.backgroundColor = "red";
+                curr = [-1, -1];
+                gameover = true;
+            }
+
             if (moved) {
                 name = map[curr[0]][curr[1]];
                 id = getRoomId(curr);
                 document.getElementById(id).style.backgroundColor = "blue";
                 msg = "You moved to the " + name + "!";
             }
+
+            document.getElementById("money").innerHTML = "$" + money;
 
             moves = document.getElementById("moves").text;
             document.getElementById("moves").value = msg + "\nYou said: " + command + "\n" + document.getElementById("moves").value
@@ -119,10 +148,14 @@
 </head>
 <body>
 <h1>Welcome to Zork</h1>
-<table border="1" style="width:400px">
+<table id="table" border="1" style="width:400px">
     <tr><td border="1" id="dancefloor">&nbsp;</td><td border="1" id="vault">&nbsp;</td><td border="1" id="tunnel">&nbsp;</td></tr>
     <tr><td border="1" id="study">&nbsp;</td><td border="1" id="mainhall">&nbsp;</td><td border="1" id="kitchen">&nbsp;</td></tr>
     <tr><td border="1" id="library">&nbsp;</td><td border="1" id="parlor" style="background-color: blue">&nbsp;</td><td border="1" id="diningroom">&nbsp;</td></tr>
+</table>
+<table border="1" style="width:200px; margin-top: 20px">
+    <tr><td border="1">&nbspHealth</td><td border="1">Money</td></tr>
+    <tr><td border="1" id="health">10</td><td border="1" id="money">$0</td></tr>
 </table>
 <br />
 <textarea id="moves" rows="6" cols="50">You are in the parlor.
@@ -134,7 +167,7 @@
 <form action="javascript:zork();">
     <input type="text" name="command" id="command"/>
     <input type="submit" id="submit" name="submit">
-    <img hidden src="http://images.clipartpanda.com/death-clipart-tombstone-clipart.gif" alt="Game over. Dude." height="50"/>
+    <img hidden id="dead" src="http://images.clipartpanda.com/death-clipart-tombstone-clipart.gif" alt="Game over. Dude." height="50"/>
 </form>
 </body>
 </html>
