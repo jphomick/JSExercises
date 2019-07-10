@@ -1,37 +1,114 @@
 <html>
 <head>
     <script>
-        var map = [["danceFloor", "vault", "tunnel"],["study", "mainHall", "kitchen"],["library", "parlor", "diningRoom"]];
+        var map = [["dance floor", "vault", "tunnel"],["study", "main hall", "kitchen"],["library", "parlor", "dining room"]];
         var curr = [2, 1];
+        var monsters = [["Dancing Skeleton", null, "Spider"],["Educated Ghost", "Stretch", "Bat"],["Evil Wizard", null, "Talking Pizza"]];
+        var items = [["Disco Ball", "Chest", "Wall"],[null, "Map", "Table"],["Book", "Piano", "Bottle"]];
+        var loot = [[100, 0, 25],[60, 35, 10],[80, 0, 55]];
+        var money = 0;
+        var hasKey = false;
+        var hasBomb = false;
+
+        function getRoomId(location) {
+            return map[location[0]][location[1]].replace(" ", "");
+        }
 
         function zork(){
-            var command = document.getElementById("command").value;
-            var msg = ""
+            var command = document.getElementById("command").value.toLowerCase();
+            var msg = "";
             document.getElementById("command").value = '';
 
             //document.getElementById("message").innerHTML = "<b>You said: " + v + "</b>"
-            if (command.includes("left") && curr[1] > 0) {
-                document.getElementById(map[curr[0]][curr[1]]).style.backgroundColor = "white";
-                curr = [curr[0], curr[1] - 1];
-                document.getElementById(map[curr[0]][curr[1]]).style.backgroundColor = "blue";
-                msg = "You moved left to a new location!"
-            } else if (command.includes("right") && curr[1] < map[1].length - 1) {
-                document.getElementById(map[curr[0]][curr[1]]).style.backgroundColor = "white";
-                curr = [curr[0], curr[1] + 1];
-                document.getElementById(map[curr[0]][curr[1]]).style.backgroundColor = "blue";
-                msg = "You moved right to a new location!"
-            } else if (command.includes("up") && curr[0] > 0) {
-                document.getElementById(map[curr[0]][curr[1]]).style.backgroundColor = "white";
-                curr = [curr[0] - 1, curr[1]];
-                document.getElementById(map[curr[0]][curr[1]]).style.backgroundColor = "blue";
-                msg = "You moved up to a new location!"
-            } else if (command.includes("down") && curr[0] < map[0].length - 1) {
-                document.getElementById(map[curr[0]][curr[1]]).style.backgroundColor = "white";
-                curr = [curr[0] + 1, curr[1]];
-                document.getElementById(map[curr[0]][curr[1]]).style.backgroundColor = "blue";
-                msg = "You moved down to a new location!"
-            } else {
-                msg = "Nothing happens"
+            var name;
+            var id;
+            var moved = false;
+
+            if (command.includes("use") && items[curr[0]][curr[1]] != null && command.includes(items[curr[0]][curr[1]].toLowerCase())) {
+                if (command.includes("map")) {
+                    msg = "The old dusty map seems to illustrate a key inside the folds of a book."
+                } else if (command.includes("disco ball")) {
+                    msg = "Dance, dance, dance the night away!";
+                    if (monsters[curr[0]][curr[1]] != null && monsters[curr[0]][curr[1]].includes("Dancing Skeleton")) {
+                        msg += "\nThe skeleton is so impressed by your moves, he lets you pass!"
+                        monsters[curr[0]][curr[1]] = null;
+                    }
+                } else if (command.includes("piano")) {
+                    msg = "You play the piano for a bit. You sound nice.\n...At least that's what you tell yourself";
+                } else if (command.includes("table")) {
+                    msg = "You sit at the table. There's nothing to eat here.";
+                } else if (command.includes("chest")) {
+                    if (hasKey) {
+                        msg = "You found a...\nbomb inside the chest! A bomb? Who put that there?"
+                        hasBomb = true;
+                        items[curr[0]][curr[1]] = null;
+                    } else {
+                        msg = "You need a key to open the chest. It's locked tight.";
+                    }
+                } else if (command.includes("wall")) {
+                    if (hasBomb) {
+                        msg = "Using the bomb, you detonate the wall and escape! YOU WIN!\nFinal money: $" + money;
+                        document.getElementById(getRoomId(curr)).style.backgroundColor = "white";
+                        curr = [-1, -1];
+                    } else {
+                        msg = "The wall looks a bit loose.";
+                    }
+                } else if (command.includes("book")) {
+                    msg = "You find a key inside the book!";
+                    hasKey = true;
+                    items[curr[0]][curr[1]] = null;
+                } else if (command.includes("bottle")) {
+                    msg = "There was $45 inside the bottle!";
+                    money += 45;
+                    items[curr[0]][curr[1]] = null;
+                }
+            } else if (command.includes("attack") && monsters[curr[0]][curr[1]] != null && command.includes(monsters[curr[0]][curr[1]].toLowerCase())) {
+                if (command.includes("dancing skeleton")) {
+                    msg = "The skeleton dodges your attack with sick moves!"
+                } else if (command.includes("")) {
+                    msg = "You defeat the " + monsters[curr[0]][curr[1]] + "!\nYou got $" + loot[curr[0]][curr[1]] + " loot!";
+                    monsters[curr[0]][curr[1]] = null;
+                    money += loot[curr[0]][curr[1]];
+                }
+            } else if (command.includes("view")) {
+                msg = "Things in the room:"
+                if (monsters[curr[0]][curr[1]] != null) {
+                    msg += "\n- " + monsters[curr[0]][curr[1]];
+                }
+                if (items[curr[0]][curr[1]] != null) {
+                    msg += "\n- " + items[curr[0]][curr[1]];
+                }
+            } else if (monsters[curr[0]][curr[1]] == null) {
+                if (command.includes("left") && curr[1] > 0) {
+                    document.getElementById(getRoomId(curr)).style.backgroundColor = "white";
+                    curr = [curr[0], curr[1] - 1];
+                    moved = true;
+                } else if (command.includes("right") && curr[1] < map[1].length - 1) {
+                    document.getElementById(getRoomId(curr)).style.backgroundColor = "white";
+                    curr = [curr[0], curr[1] + 1];
+                    moved = true;
+                } else if (command.includes("up") && curr[0] > 0) {
+                    document.getElementById(getRoomId(curr)).style.backgroundColor = "white";
+                    curr = [curr[0] - 1, curr[1]];
+                    moved = true;
+                } else if (command.includes("down") && curr[0] < map[0].length - 1) {
+                    document.getElementById(getRoomId(curr)).style.backgroundColor = "white";
+                    curr = [curr[0] + 1, curr[1]];
+                    moved = true;
+                } else {
+                    msg = "Nothing happens";
+                }
+            } else if (command.includes("left") || command.includes("right") || command.includes("up") || command.includes("down")) {
+                msg = "You cannot move while there are monsters in the room!"
+            } else if (msg == "") {
+                msg = "Nothing happens";
+            }
+
+            if (moved) {
+                name = map[curr[0]][curr[1]];
+                id = getRoomId(curr);
+                document.getElementById(id).style.backgroundColor = "blue";
+                msg = "You moved to the " + name + "!";
             }
 
             moves = document.getElementById("moves").text;
@@ -43,9 +120,9 @@
 <body>
 <h1>Welcome to Zork</h1>
 <table border="1" style="width:400px">
-    <tr><td border="1" id="danceFloor">&nbsp;</td><td border="1" id="vault">&nbsp;</td><td border="1" id="tunnel">&nbsp;</td></tr>
-    <tr><td border="1" id="study">&nbsp;</td><td border="1" id="mainHall">&nbsp;</td><td border="1" id="kitchen">&nbsp;</td></tr>
-    <tr><td border="1" id="library">&nbsp;</td><td border="1" id="parlor" style="background-color: blue">&nbsp;</td><td border="1" id="diningRoom">&nbsp;</td></tr>
+    <tr><td border="1" id="dancefloor">&nbsp;</td><td border="1" id="vault">&nbsp;</td><td border="1" id="tunnel">&nbsp;</td></tr>
+    <tr><td border="1" id="study">&nbsp;</td><td border="1" id="mainhall">&nbsp;</td><td border="1" id="kitchen">&nbsp;</td></tr>
+    <tr><td border="1" id="library">&nbsp;</td><td border="1" id="parlor" style="background-color: blue">&nbsp;</td><td border="1" id="diningroom">&nbsp;</td></tr>
 </table>
 <br />
 <textarea id="moves" rows="6" cols="50">You are in the parlor.
